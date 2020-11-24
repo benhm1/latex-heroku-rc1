@@ -78,9 +78,9 @@ $TEXLIVE_HOME/bin/x86_64-linux/pdflatex hello.tex
 build-step "Installing preprint (fullpage)"
 $TEXLIVE_HOME/bin/x86_64-linux/tlmgr install preprint
 $TEXLIVE_HOME/bin/x86_64-linux/tlmgr install enumitem
-$TEXLIVE_HOME/bin/x86_64-linux/tlmgr install tabularx
-$TEXLIVE_HOME/bin/x86_64-linux/tlmgr install fancyhdr
-$TEXLIVE_HOME/bin/x86_64-linux/tlmgr install graphicx
+#$TEXLIVE_HOME/bin/x86_64-linux/tlmgr install tabularx
+#$TEXLIVE_HOME/bin/x86_64-linux/tlmgr install fancyhdr
+#$TEXLIVE_HOME/bin/x86_64-linux/tlmgr install graphicx
 $TEXLIVE_HOME/bin/x86_64-linux/texhash
 
 # Set up the environment for runtimes now that compilation has finished
