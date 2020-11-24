@@ -25,7 +25,7 @@ wget http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz -O $TEXL
 build-step "Extracting Tarball"
 (cd $TEXLIVE_HOME/bld/ && tar -xvzf down-install-tl-unx.tar.gz && mv install-tl* install-dir)
 
-echo <<EOF >> $TEXLIVE_HOME/bld/texlive.profile
+cat <<EOF >> $TEXLIVE_HOME/bld/texlive.profile
 selected_scheme scheme-basic
 TEXDIR $TEXLIVE_HOME
 TEXMFCONFIG ~/.texlive2020/texmf-config
@@ -62,7 +62,7 @@ build-step "Installing from profile"
 perl $TEXLIVE_HOME/bld/install-dir/install-tl --profile $TEXLIVE_HOME/bld/texlive.profile
 
 build-step "Testing installation"
-echo <<EOF >> hello.tex
+cat <<EOF >> hello.tex
 \documentclass{article}
 \usepackage{hyperref}
 \begin{document}
