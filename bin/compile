@@ -76,8 +76,8 @@ $TEXLIVE_HOME/bin/x86_64-linux/pdflatex hello.tex
 
 # Install support for fullpage package
 build-step "Installing preprint (fullpage)"
-$TEXLIVE_HOME/bin/tlmgr install preprint
-$TEXLIVE_HOME/bin/texhash
+$TEXLIVE_HOME/bin/x86_64-linux/tlmgr install preprint
+$TEXLIVE_HOME/bin/x86_64-linux/texhash
 
 # Set up the environment for runtimes now that compilation has finished
 echo 'export PATH=$HOME/.texlive/bin/x86_64-linux:$TEXLIVE_HOME/bin/x86_64-linux/:$PATH' >> $PROFILE_D
