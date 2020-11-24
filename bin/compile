@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir>
+
+BUILD_DIR=$1
+CACHE_DIR=$2
+
+TEXLIVE_HOME=$BUILD_DIR/.texlive
+TEXLIVE_CACHE=$CACHE_DIR/.texlive
+PATH=$TEXLIVE_HOME/bin/x86_64-linux:$PATH
+PROFILE_D=$BUILD_DIR/.profile.d/texlive.sh
+
+# Prepare the various paths
+mkdir -p $TEXLIVE_HOME
+mkdir -p $TEXLIVE_HOME/bld
+mkdir -p $TEXLIVE_CACHE
+mkdir -p `dirname $PROFILE_D`
+
+build-step "Downloading TeX Live"
+wget http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz -O $TEXLIVE_HOME/bld/down-install-tl-unx.tar.gz
+
+build-step "Extracting Tarball"
+(cd $TEXLIVE_HOME/bld/ && tar -xvzf down-install-tl-unx.tar.gz && mv install-tl* install-dir)
+
+echo <<EOF >> texlive.profile
+selected_scheme scheme-basic
+TEXDIR $TEXLIVE_HOME
+TEXMFCONFIG ~/.texlive2020/texmf-config
+TEXMFHOME ~/texmf
+TEXMFLOCAL $TEXLIVE_HOME/texmf-local
+TEXMFSYSCONFIG $TEXLIVE_HOME/texmf-config
+TEXMFSYSVAR $TEXLIVE_HOME/texmf-var
+TEXMFVAR ~/.texlive2020/texmf-var
+binary_x86_64-linux 1
+instopt_adjustpath 0
+instopt_adjustrepo 1
+instopt_letter 0
+instopt_portable 0
+instopt_write18_restricted 1
+tlpdbopt_autobackup 1
+tlpdbopt_backupdir tlpkg/backups
+tlpdbopt_create_formats 1
+tlpdbopt_desktop_integration 1
+tlpdbopt_file_assocs 1
+tlpdbopt_generate_updmap 0
+tlpdbopt_install_docfiles 1
+tlpdbopt_install_srcfiles 1
+tlpdbopt_post_code 1
+tlpdbopt_sys_bin /usr/local/bin
+tlpdbopt_sys_info /usr/local/share/info
+tlpdbopt_sys_man /usr/local/share/man
+tlpdbopt_w32_multi_user 1
+EOF
+
+build-step "Printing texlive.profile"
+cat texlive.profile
+
+build-step "Installing from profile"
+perl $TEXLIVE_HOME/bld/install-dir/install-tl --profile texlive.profile
+
+build-step "Testing installation"
+echo <<EOF >> hello.tex
+\documentclass{article}
+\usepackage{hyperref}
+\begin{document}
+Hello world \LaTeX
+
+\url{https://linuxconfig.org}
+\end{document}
+EOF
+
+pdflatex hello.tex
+
+# Set up the environment for runtimes now that compilation has finished
+echo 'export PATH=$HOME/.texlive/bin/x86_64-linux:$PATH' >> $PROFILE_D
