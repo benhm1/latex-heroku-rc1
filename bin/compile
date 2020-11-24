@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # bin/compile <build-dir> <cache-dir>
 
+function build-step (){ echo "-----> $@"; }
+function build-warn (){ echo " !     $@"; }
+function build-info (){ echo "       $@"; }
+
 BUILD_DIR=$1
 CACHE_DIR=$2
 
@@ -21,7 +25,7 @@ wget http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz -O $TEXL
 build-step "Extracting Tarball"
 (cd $TEXLIVE_HOME/bld/ && tar -xvzf down-install-tl-unx.tar.gz && mv install-tl* install-dir)
 
-echo <<EOF >> texlive.profile
+echo <<EOF >> $TEXLIVE_HOME/bld/texlive.profile
 selected_scheme scheme-basic
 TEXDIR $TEXLIVE_HOME
 TEXMFCONFIG ~/.texlive2020/texmf-config
@@ -52,10 +56,10 @@ tlpdbopt_w32_multi_user 1
 EOF
 
 build-step "Printing texlive.profile"
-cat texlive.profile
+cat $TEXLIVE_HOME/bld/texlive.profile
 
 build-step "Installing from profile"
-perl $TEXLIVE_HOME/bld/install-dir/install-tl --profile texlive.profile
+perl $TEXLIVE_HOME/bld/install-dir/install-tl --profile $TEXLIVE_HOME/bld/texlive.profile
 
 build-step "Testing installation"
 echo <<EOF >> hello.tex
@@ -68,7 +72,7 @@ Hello world \LaTeX
 \end{document}
 EOF
 
-pdflatex hello.tex
+$TEXLIVE_HOME/bin/x86_64-linux/pdflatex hello.tex
 
 # Set up the environment for runtimes now that compilation has finished
-echo 'export PATH=$HOME/.texlive/bin/x86_64-linux:$PATH' >> $PROFILE_D
+echo 'export PATH=$HOME/.texlive/bin/x86_64-linux:$TEXLIVE_HOME/bin/x86_64-linux/:$PATH' >> $PROFILE_D
